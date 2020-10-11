@@ -21,3 +21,10 @@ class Soundwave():
             if (samples_i<0) or (samples_i>self.nsamples):
                 samples_i=-1
         return self.samples[samples_i]
+def sin(angle, amplitude, f, duration_ms, fs=None, name=None):
+    if fs==None:
+        fs=20*f
+    if name==None:
+        name= "sine %d Hz" % f
+    n_samples=np.int64(duration_ms*fs/1000)
+    return Soundwave(angle, amplitude*np.sin(f/fs*2*np.pi*np.arange(0,n_samples)), fs, name=name)

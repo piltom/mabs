@@ -14,30 +14,28 @@ paragraphs.
 
 Create a new set of signals (must be an array, even if only one):
 
-For now, only the direct class Soundwave usage is implemented. The arguments are
-angle of arrival (degrees), signal samples (numpy array), sampling frequency and an optional
-string for the name.
+For creating a pure tone (i.e. a sine wave) we can use function soundwave.sin(angle, amplitude, frequency, duration_ms). Extra optional parameters are `fs` (sampling frequency) and `name`.
 
 ```python
-from models.soundwave import Soundwave
+from models import Soundwave
 
 ...
 
-sw1=Soundwave(0, 10*np.sin(0.1*np.pi*np.arange(0,999)), 100000, name="sine 5kHz")
-sw2=Soundwave(80, 10*np.sin(0.2*np.pi*np.arange(0,999)), 100000, name="sine 10kHz")
-sw3=Soundwave(90, 10*np.sin(0.05*np.pi*np.arange(0,999)), 100000, name="sine 2.5kHz")
+sw1=soundwave.sin(0, 10, 5000, 10,fs=100000)
+sw2=soundwave.sin(70, 11, 10000, 10,fs=100000)
+sw3=soundwave.sin(85, 9, 2500, 10,fs=100000)
 signals=[sw1,sw2,sw3]
 ```
 
-Now we instantiate a microphone array, in this case a semi coprime array (parameters
-  are K,M,N,L):
+Now we instantiate a microphone array, in this case a semi coprime array. Parameters
+  are K,M,N,L,noise (variance of a 0 centered gaussian).
 
 ```python
 from models.micarrays import SemiCoprimeArray
 
 ...
 
-scma1= SemiCoprimeArray(5,8,9,1)
+scma1= SemiCoprimeArray(5,8,9,1,noise=1)
 ```
 
 Then we need a signal processor. In this case, a minimum window power processor
