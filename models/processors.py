@@ -9,6 +9,7 @@ class MinWindowProcessor():
     def __str__(self):
         return self.name
     def setupBuffer(self, nsignals):
+        self.buffers=[]
         for i in range(nsignals):
             self.buffers.append(deque([], maxlen=self.window_size))
     def clearBuffer(self):
