@@ -9,8 +9,13 @@ class BaseTimeSim():
         self.t_range=t_range
         self.t_step=t_step
         self.name=name
+        self.out=None
     def __str__(self):
         return '%s Array: %s Processor: %s step:%f ms' % (self.name, self.mic_array.__str__(), self.processor.__str__(), self.t_step)
+    def getOut(self):
+        return np.array(self.out)
+    def wasRun(self):
+        return not self.out is None
     def run(self):
         self.processor.clearBuffer()
         steps = np.int64((self.t_range[1]-self.t_range[0])/self.t_step)
@@ -18,4 +23,5 @@ class BaseTimeSim():
         for n in range(steps):
             t=n*self.t_step
             out[n]=self.processor.process(self.mic_array.getOut(self.signals, t))
-        return out
+        self.out=out
+        return np.array(self.out)

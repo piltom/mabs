@@ -43,7 +43,7 @@ class SemiCoprimeLArray():
         micsN=0
         micsK=0
         for signal in signals:
-            micsM=micsM + signal.get_sample(t_ms+self.mDelays*signal.phicos*signal.thetacos) + signal.get_sample(t_ms+self.mDelays*signal.phisin) + np.random.normal(0,self.noise)
-            micsN=micsN + signal.get_sample(t_ms+self.nDelays*signal.phicos*signal.thetacos) + signal.get_sample(t_ms+self.nDelays*signal.phisin) + np.random.normal(0,self.noise)
-            micsK=micsK + signal.get_sample(t_ms+self.kDelays*signal.phicos*signal.thetacos) + signal.get_sample(t_ms+self.kDelays*signal.phisin) + np.random.normal(0,self.noise)
-        return np.array([sum(micsN)/self.N,sum(micsM)/self.M,sum(micsK)/self.K])
+            micsM=micsM + signal.get_sample(t_ms+self.mDelays*signal.phicos*signal.thetacos) + signal.get_sample(t_ms+self.mDelays*signal.phicos*signal.thetasin) + np.random.normal(0,self.noise)
+            micsN=micsN + signal.get_sample(t_ms+self.nDelays*signal.phicos*signal.thetacos) + signal.get_sample(t_ms+self.nDelays*signal.phicos*signal.thetasin) + np.random.normal(0,self.noise)
+            micsK=micsK + signal.get_sample(t_ms+self.kDelays*signal.phicos*signal.thetacos) + signal.get_sample(t_ms+self.kDelays*signal.phicos*signal.thetasin) + np.random.normal(0,self.noise)
+        return np.array([sum(micsN)/(2*self.N),sum(micsM)/(2*self.M),sum(micsK)/(2*self.K)])
