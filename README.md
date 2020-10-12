@@ -3,7 +3,7 @@
 Program for simulating different microphone arrays and evaluating their response to signals,
  using different processors.
 
-## Usage
+## Usage OUTDATED - Needs update to new parameters
 
 In its current state (no gui/ui at all), you need to create a script and manually
 instantiante the different components of the system (signals, mic arrays, processors, simulation)
