@@ -1,7 +1,23 @@
 import numpy as np
 
 def SemiCoprimeArray(K,M,N,L, noise=0):
-    """Linear Semi-Coprime microphone array in x axis."""
+    """
+    Linear Semi-Coprime microphone array
+
+    Function for creating a GenericArray representing a semi coprime microphone
+    array.
+
+    Args:
+        K (int): Number of mics in the small ULA subarray
+        M (int): Number of mics in the first coprime subarray
+        N (int): Number of mics in the second coprime subarray
+        L (int): Length of mic bar
+
+    Returns:
+        GenericArray: Generic Array class representing a linear semi coprime array.
+
+    """
+
     freq=343*M*N/(2*L)
     d=343/(2*freq)
     subarrayK=np.linspace((0,0,0), ((K-1)*d,0,0), K)
