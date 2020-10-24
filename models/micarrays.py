@@ -21,8 +21,8 @@ def SemiCoprimeArray(K,M,N,L, noise=0):
     freq=343*M*N/(2*L)
     d=343/(2*freq)
     subarrayK=np.linspace((0,0,0), ((K-1)*d,0,0), K)
-    subarrayM=np.linspace((0,0,0), (L,0,0), M)
-    subarrayN=np.linspace((0,0,0), (L,0,0), N)
+    subarrayM=np.linspace((0,0,0), (d*N*(M-1),0,0), M)
+    subarrayN=np.linspace((0,0,0), (d*M*(N-1),0,0), N)
     micPos=np.array([subarrayK, subarrayM, subarrayN])
 
     name='SemiCoprimeLArray - N: %d M: %d K: %d L: %d' % (N, M, K, L)
@@ -30,12 +30,26 @@ def SemiCoprimeArray(K,M,N,L, noise=0):
     return GenericArray(micPos, noise, name)
 
 def SemiCoprimeLArray(K,M,N,L, noise=0):
-    """Two Linear Semi-Coprime microphone array in an L shape."""
+    """Two Linear Semi-Coprime microphone array in a L shape."""
     freq=343*M*N/(2*L)
     d=343/(2*freq)
     subarrayK=np.concatenate((np.linspace((0,0,0), ((K-1)*d,0,0), K),np.linspace((0,0,0), (0,(K-1)*d,0), K)))
-    subarrayM=np.concatenate((np.linspace((0,0,0), (L,0,0), M), np.linspace((0,0,0), (0,L,0), M)))
-    subarrayN=np.concatenate((np.linspace((0,0,0), (L,0,0), N), np.linspace((0,0,0), (0,L,0), N)))
+    subarrayM=np.concatenate((np.linspace((0,0,0), (d*N*(M-1),0,0), M), np.linspace((0,0,0), (0,d*N*(M-1),0), M)))
+    subarrayN=np.concatenate((np.linspace((0,0,0), (d*M*(N-1),0,0), N), np.linspace((0,0,0), (0,d*M*(N-1),0), N)))
+    micPos=np.array([subarrayK, subarrayM, subarrayN])
+
+    name='SemiCoprimeLArray - N: %d M: %d K: %d L: %d' % (N, M, K, L)
+
+    return GenericArray(micPos, noise, name)
+
+
+def SemiCoprimeXArray(K,M,N,L, noise=0):
+    """Two Linear Semi-Coprime microphone array in a L shape."""
+    freq=343*M*N/(2*L)
+    d=343/(2*freq)
+    subarrayK=np.concatenate((np.linspace((-d*(K//2),0,0), (d*(K//2),0,0), K),np.linspace((0,-d*(K//2),0), (0,d*(K//2),0), K)))
+    subarrayM=np.concatenate((np.linspace((-d*N*(M//2),0,0), (d*N*(M//2),0,0), M), np.linspace((0,-d*N*(M//2),0), (0,d*N*(M//2),0), M)))
+    subarrayN=np.concatenate((np.linspace((-d*M*(N//2),0,0), (d*M*(N//2),0,0), N), np.linspace((0,-d*M*(N//2),0), (0,d*M*(N//2),0), N)))
     micPos=np.array([subarrayK, subarrayM, subarrayN])
 
     name='SemiCoprimeLArray - N: %d M: %d K: %d L: %d' % (N, M, K, L)
