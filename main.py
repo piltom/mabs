@@ -3,8 +3,6 @@ from models.processors import MinWindowProcessor
 from engine import plotter
 from engine.timesim import BaseTimeSim
 from engine.directivity import minprocdirectivity
-import numpy as np
-import matplotlib.pyplot as plt
 
 if __name__=="__main__":
     sw1=soundwave.sin((90,0), 10, 5000, (0,10),fs=100000)
@@ -14,14 +12,9 @@ if __name__=="__main__":
     scma1= micarrays.SemiCoprimeLArray(5,8,9,1, noise=0)
 
     directivity = minprocdirectivity(scma1.micPos, 5000)
+    plotter.plotPolar(list(range(360)), directivity[12,:])
 
-    plt.axes(projection = 'polar')
-    thetaRads = np.linspace(0, 359, 360)*np.pi/180
-    for i, rads in enumerate(thetaRads):
-        plt.polar(rads, directivity[89, i], 'g.')
-        print(directivity[89, i])
-    # proc_min5=MinWindowProcessor(20)
-    plt.show()
+
     # timesim1=BaseTimeSim(scma1,signals,proc_min5,[0,40],0.01, name="TestSim")
 
     # plotter.plotSimFFT(timesim1)
