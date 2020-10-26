@@ -4,9 +4,6 @@ from engine import plotter
 from engine.timesim import BaseTimeSim
 from engine.directivity import minprocdirectivity
 
-import numpy as np
-import matplotlib.pyplot as plt
-
 if __name__=="__main__":
     sw1=soundwave.sin((90,0), 10, 5000, (0,10),fs=100000)
     sw2=soundwave.sin((0,0), 10, 5000, (15,25),fs=100000)
@@ -16,12 +13,6 @@ if __name__=="__main__":
 
     directivity = minprocdirectivity(scma1.micPos, 5000)
 
-    plt.axes(projection = 'polar')
-    thetaRads = np.linspace(0, 359, 360)*np.pi/180
-    plt.polar(thetaRads, directivity[89,:], 'g.')
-
-    plt.show()
-    # proc_min5=MinWindowProcessor(20)
 
     # timesim1=BaseTimeSim(scma1,signals,proc_min5,[0,40],0.01, name="TestSim")
 

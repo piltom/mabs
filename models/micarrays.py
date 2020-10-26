@@ -50,9 +50,7 @@ def SemiCoprimeXArray(K,M,N,L, noise=0):
     subarrayK=np.concatenate((np.linspace((-d*(K//2),0,0), (d*(K//2),0,0), K),np.linspace((0,-d*(K//2),0), (0,d*(K//2),0), K)))
     subarrayM=np.concatenate((np.linspace((-d*N*(M//2),0,0), (d*N*(M//2),0,0), M), np.linspace((0,-d*N*(M//2),0), (0,d*N*(M//2),0), M)))
     subarrayN=np.concatenate((np.linspace((-d*M*(N//2),0,0), (d*M*(N//2),0,0), N), np.linspace((0,-d*M*(N//2),0), (0,d*M*(N//2),0), N)))
-    micPos=np.array([subarrayK, subarrayM, subarrayN])
 
-    name='SemiCoprimeLArray - N: %d M: %d K: %d L: %d' % (N, M, K, L)
 
     return GenericArray(micPos, noise, name)
 
