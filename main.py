@@ -3,6 +3,7 @@ from models.processors import MinWindowProcessor
 from engine import plotter
 from engine.timesim import BaseTimeSim
 from engine.directivity import minprocdirectivity
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -17,11 +18,11 @@ if __name__=="__main__":
 
     plt.axes(projection = 'polar')
     thetaRads = np.linspace(0, 359, 360)*np.pi/180
-    for i, rads in enumerate(thetaRads):
-        plt.polar(rads, directivity[89, i], 'g.')
-        print(directivity[89, i])
-    # proc_min5=MinWindowProcessor(20)
+    plt.polar(thetaRads, directivity[89,:], 'g.')
+
     plt.show()
+    # proc_min5=MinWindowProcessor(20)
+
     # timesim1=BaseTimeSim(scma1,signals,proc_min5,[0,40],0.01, name="TestSim")
 
     # plotter.plotSimFFT(timesim1)

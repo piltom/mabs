@@ -5,12 +5,10 @@ def minprocdirectivity(micPos, f):
     gains = np.zeros(len(micPos))
 
     for phi in range(360):
-        phiRad = phi*np.pi/180
         for theta in range(360):
-            thetaRad = theta*np.pi/180
-            w=np.array([np.cos(np.pi*phiRad/180)*np.cos(np.pi*thetaRad/180),
-                        np.cos(np.pi*phiRad/180)*np.sin(np.pi*thetaRad/180),
-                        np.sin(np.pi*phiRad/180)]) # Weights matrix
+            w=np.array([np.cos(np.pi*phi/180)*np.cos(np.pi*theta/180),
+                        np.cos(np.pi*phi/180)*np.sin(np.pi*theta/180),
+                        np.sin(np.pi*phi/180)]) # Weights matrix
             for i, subArr in enumerate(micPos):
                 realPart = 0
                 imagPart = 0
@@ -19,5 +17,5 @@ def minprocdirectivity(micPos, f):
                     realPart += np.cos(2*np.pi*f*delay)
                     imagPart += np.sin(2*np.pi*f*delay)
                 gains[i] = np.sqrt(realPart*realPart + imagPart*imagPart)/len(subArr)
-            directivity[phi][theta]=np.min(gains[1])
+            directivity[phi][theta]=np.min(gains[0])
     return directivity
