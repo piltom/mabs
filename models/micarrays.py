@@ -69,7 +69,7 @@ def SemiCoprimeLArray(K,M,N,L, noise=0):
 
 
 def SemiCoprimeXArray(K,M,N,L, noise=0):
-    """Two Linear Semi-Coprime microphone array in a L shape."""
+    """Two Linear Semi-Coprime microphone array in a X shape."""
     freq=343*M*N/(2*L)
     d=343/(2*freq)
     subarrayK=np.concatenate((np.linspace((-d*(K//2),0,0), (d*(K//2),0,0), K),np.linspace((0,-d*(K//2),0), (0,d*(K//2),0), K)))
@@ -79,6 +79,17 @@ def SemiCoprimeXArray(K,M,N,L, noise=0):
 
     name='SemiCoprimeXArray - N: %d M: %d K: %d L: %d' % (N, M, K, L)
 
+    return GenericArray(micPos, noise, name)
+def TriCoprimeArray(M,N,R, noise=0):
+    """Three Coprime microphone array in a peace sign shape."""
+    freq=343*M*N/(2*R)
+    d=343/(2*freq)
+    subarray0=np.concatenate((np.linspace((0,0,0), (d*N*M,0,0), M),np.linspace((0,0,0), (d*N*M,0,0), N)))
+    subarray1=np.concatenate((np.linspace((0,0,0), (d*N*M*np.cos(2*np.pi/3),d*N*M*np.sin(2*np.pi/3),0), M),np.linspace((0,0,0), (d*N*M*np.cos(2*np.pi/3),d*N*M*np.sin(2*np.pi/3),0), N)))
+    subarray2=np.concatenate((np.linspace((0,0,0), (d*N*M*np.cos(-2*np.pi/3),d*N*M*np.sin(-2*np.pi/3),0), M),np.linspace((0,0,0), (d*N*M*np.cos(-2*np.pi/3),d*N*M*np.sin(-2*np.pi/3),0), N)))
+    micPos=np.array([subarray0, subarray1, subarray2]) # Returns array of arrays
+
+    name='TriCoprimeArray - N: %d M: %d  R: %d' % (N, M, R)
     return GenericArray(micPos, noise, name)
 
 class GenericArray():

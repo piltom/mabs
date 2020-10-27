@@ -14,9 +14,9 @@ if __name__=="__main__":
     sw2=soundwave.sin((0,0), 10, 5000, (15,25),fs=100000)
     sw3=soundwave.sin((45,45), 10, 5000, (30,40),fs=100000)
     signals=[sw1,sw2,sw3]
-    scma1= micarrays.SemiCoprimeXArray(5,7,9,1, noise=0)
+    #scma1= micarrays.SemiCoprimeXArray(5,7,9,1, noise=0)
     #scma1= micarrays.ULAArray(23, 1, noise=0)
-
+    scma1= micarrays.TriCoprimeArray(5,7,1, noise=0)
     directivity = minprocdirectivity(scma1.micPos, 5000)
 
     inphi = 0

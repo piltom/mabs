@@ -51,3 +51,7 @@ def plotSim(sim):
         axs[i+1].set_ylabel("Amplitude [V]")
     fig.tight_layout()
     plt.show()
+def plotPolar(angles, values):
+    plt.axes(projection = 'polar')
+    plt.polar(np.array(angles)*np.pi/180, values)
+    plt.show()
