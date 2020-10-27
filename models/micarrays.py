@@ -1,5 +1,30 @@
 import numpy as np
 
+def ULAArray(K, L, noise=0):
+    """
+    Linear ULA microphone array
+
+    Function for creating a GenericArray representing an ULA microphone
+    array.
+
+    Args:
+        K (int): Number of mics in the ULA subarray
+        L (int): Length of mic bar
+
+    Returns:
+        GenericArray: Generic Array class representing an ULA array.
+
+    """
+
+    freq=343*K/(2*L)
+    d=343/(2*freq)
+    subarrayK=np.concatenate((np.linspace((-d*(K//2),0,0), (d*(K//2),0,0), K),np.linspace((0,-d*(K//2),0), (0,d*(K//2),0), K)))
+    micPos=np.array([subarrayK])
+
+    name='ULAArray - K: %d L: %d' % (K, L)
+
+    return GenericArray(micPos, noise, name)
+
 def SemiCoprimeArray(K,M,N,L, noise=0):
     """
     Linear Semi-Coprime microphone array
@@ -50,7 +75,9 @@ def SemiCoprimeXArray(K,M,N,L, noise=0):
     subarrayK=np.concatenate((np.linspace((-d*(K//2),0,0), (d*(K//2),0,0), K),np.linspace((0,-d*(K//2),0), (0,d*(K//2),0), K)))
     subarrayM=np.concatenate((np.linspace((-d*N*(M//2),0,0), (d*N*(M//2),0,0), M), np.linspace((0,-d*N*(M//2),0), (0,d*N*(M//2),0), M)))
     subarrayN=np.concatenate((np.linspace((-d*M*(N//2),0,0), (d*M*(N//2),0,0), N), np.linspace((0,-d*M*(N//2),0), (0,d*M*(N//2),0), N)))
+    micPos=np.array([subarrayK, subarrayM, subarrayN]) # Returns array of arrays
 
+    name='SemiCoprimeXArray - N: %d M: %d K: %d L: %d' % (N, M, K, L)
 
     return GenericArray(micPos, noise, name)
 
@@ -70,4 +97,5 @@ class GenericArray():
                 if not ((str(signal.angles),i) in self.delayCache):
                     self.delayCache[(str(signal.angles),i)]=np.sum(self.micPos[i]*signal.w, axis=1)*1000/343.3
                 micOuts[i]=micOuts[i]+sum(signal.get_sample(t_ms+self.delayCache[(str(signal.angles),i)]))
+
         return np.array(micOuts)
