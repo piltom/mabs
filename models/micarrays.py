@@ -80,16 +80,25 @@ def SemiCoprimeXArray(K,M,N,L, noise=0):
     name='SemiCoprimeXArray - N: %d M: %d K: %d L: %d' % (N, M, K, L)
 
     return GenericArray(micPos, noise, name)
-def TriCoprimeArray(M,N,R, noise=0):
-    """Three Coprime microphone array in a peace sign shape."""
+
+def TriCoprimeArray(K,M,N,R, noise=0):
+    """Three Linear Semi-Coprime microphone array in a peace sign shape."""
     freq=343*M*N/(2*R)
     d=343/(2*freq)
-    subarray0=np.concatenate((np.linspace((0,0,0), (d*N*M,0,0), M),np.linspace((0,0,0), (d*N*M,0,0), N)))
-    subarray1=np.concatenate((np.linspace((0,0,0), (d*N*M*np.cos(2*np.pi/3),d*N*M*np.sin(2*np.pi/3),0), M),np.linspace((0,0,0), (d*N*M*np.cos(2*np.pi/3),d*N*M*np.sin(2*np.pi/3),0), N)))
-    subarray2=np.concatenate((np.linspace((0,0,0), (d*N*M*np.cos(-2*np.pi/3),d*N*M*np.sin(-2*np.pi/3),0), M),np.linspace((0,0,0), (d*N*M*np.cos(-2*np.pi/3),d*N*M*np.sin(-2*np.pi/3),0), N)))
-    micPos=np.array([subarray0, subarray1, subarray2]) # Returns array of arrays
 
-    name='TriCoprimeArray - N: %d M: %d  R: %d' % (N, M, R)
+    subarrayK=np.concatenate((np.linspace((0,0,0), ((K-1)*d,0,0), K),
+                             np.linspace((0,0,0), ((K-1)*d*np.cos(np.pi/3), (K-1)*d*np.sin(np.pi/3),0), K),
+                             np.linspace((0,0,0), ((K-1)*d*np.cos(-np.pi/3), (K-1)*d*np.sin(-np.pi/3),0), K)))
+    subarrayM=np.concatenate((np.linspace((0,0,0), (d*N*M,0,0), M),
+                             np.linspace((0,0,0), (d*N*M*np.cos(np.pi/3),d*N*M*np.sin(np.pi/3),0), M),
+                             np.linspace((0,0,0), (d*N*M*np.cos(-np.pi/3),d*N*M*np.sin(-np.pi/3),0), M)))
+    subarrayN=np.concatenate((np.linspace((0,0,0), (d*N*M,0,0), N),
+                             np.linspace((0,0,0), (d*N*M*np.cos(np.pi/3),d*N*M*np.sin(np.pi/3),0), N),
+                             np.linspace((0,0,0), (d*N*M*np.cos(-np.pi/3),d*N*M*np.sin(-np.pi/3),0), N)))
+
+    micPos=np.array([subarrayM, subarrayN, subarrayK]) # Returns array of arrays
+
+    name='TriCoprimeArray - N: %d M: %d K: %d R: %d' % (N, M, K, R)
     return GenericArray(micPos, noise, name)
 
 class GenericArray():

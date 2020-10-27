@@ -16,7 +16,7 @@ if __name__=="__main__":
     signals=[sw1,sw2,sw3]
     #scma1= micarrays.SemiCoprimeXArray(5,7,9,1, noise=0)
     #scma1= micarrays.ULAArray(23, 1, noise=0)
-    scma1= micarrays.TriCoprimeArray(5,7,1, noise=0)
+    scma1= micarrays.TriCoprimeArray(5,7, 9, 1, noise=0)
     directivity = minprocdirectivity(scma1.micPos, 5000)
 
     inphi = 0
