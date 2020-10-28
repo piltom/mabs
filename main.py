@@ -5,9 +5,7 @@ from engine.timesim import BaseTimeSim
 from engine.directivity import minprocdirectivity
 
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-from matplotlib import cm
 
 if __name__=="__main__":
     sw1=soundwave.sin((90,0), 10, 5000, (0,10),fs=100000)
@@ -16,11 +14,12 @@ if __name__=="__main__":
     signals=[sw1,sw2,sw3]
     #scma1= micarrays.SemiCoprimeXArray(5,7,9,1, noise=0)
     #scma1= micarrays.ULAArray(23, 1, noise=0)
-    scma1= micarrays.TriCoprimeArray(5,7, 9, 1, noise=0)
+    scma1= micarrays.TriCoprimeArray(7,11, 13, 1, noise=0)
     directivity = minprocdirectivity(scma1.micPos, 5000)
+    plotter.plotColormap(directivity)
 
-    inphi = 0
-    while (inphi>=0):
+    intheta = 0
+    while (intheta>=0):
         print("Escriba texto")
         intheta=input()
         plotter.plotPolar(list(range(360)), directivity[:,int(intheta)])

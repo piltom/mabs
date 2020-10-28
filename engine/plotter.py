@@ -55,3 +55,10 @@ def plotPolar(angles, values):
     plt.axes(projection = 'polar')
     plt.polar(np.array(angles)*np.pi/180, values)
     plt.show()
+def plotColormap(values):
+    fig = plt.figure()
+    plt.pcolor(values, cmap="viridis")
+    plt.imshow(values,origin='lower',interpolation='nearest')
+    #plt.clim(-0, 0)
+    plt.colorbar()
+    plt.show()
