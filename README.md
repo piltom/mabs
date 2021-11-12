@@ -1,7 +1,11 @@
 # MABS: Microphone Array Beamforming Simulator
 
+
 Program for simulating different microphone arrays and evaluating their response to signals,
 using different processors.
+
+# OUTDATED - TODO: UPDATE
+
 
 ## Usage
 
