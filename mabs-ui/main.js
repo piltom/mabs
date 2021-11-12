@@ -5,6 +5,12 @@ var wave_types = undefined;
 
 var plot_types = undefined;
 
+var myLayout = undefined;
+var myArrayManager = undefined;
+var mySignalManager = undefined;
+var myPlotManager = undefined;
+var mySignalList = undefined;
+
 class BindManager {
   constructor(){
     this.elements = {};
@@ -75,13 +81,13 @@ class genericElement {
 }
 
 class genericElementEditor {
-  constructor(container, identifier, config, onAdd){
+  constructor(container, identifier, config, buttons){
     this.types = Object.keys(config);
     this.element = new genericElement(this.types[0], config);
     this.config = config
     this.container = container;
     this.identifier = identifier;
-    this.onAdd = onAdd;
+    this.buttons = buttons;
     this.generateTable();
     this.newTypeSelected()
     $("#id"+identifier+"Type").change(() => this.newTypeSelected())
@@ -94,9 +100,14 @@ class genericElementEditor {
       myHtml += '<option value="' + myType + '"> ' + myType + '</option>';
     }
     myHtml += '</select><br><fieldset id="' + this.identifier + 'ParamSet">';
-    myHtml += '</fieldset><button type="button" id="idSubmit' + this.identifier + '">Set</button></form>';
+    myHtml += '</fieldset>'
+    for(const button of this.buttons){
+      myHtml += '<button type="button" id="idBtn'+ button.name + this.identifier + '">' + button.label + '</button></form>';
+    }
+
     this.container.html(myHtml);
-    $('#idSubmit' + this.identifier).click(() => { this.onAdd() })
+    for(const button of this.buttons)
+      $('#idBtn' + button.name + this.identifier).click(button.onClick)
   }
 
   newTypeSelected(){
@@ -126,7 +137,7 @@ class valuesListBox{
   }
 
   generateHtml(){
-    let myHtml ='<select name="' + this.identifier + '" id="idBox' + this.identifier + '" size="10"></select>';
+    let myHtml ='<select style="min-width: 300px;" name="' + this.identifier + '" id="idBox' + this.identifier + '" size="10"></select>';
     this.container.html(myHtml);
   }
 
@@ -174,12 +185,48 @@ var config1 = {
 var GlobBinder = new BindManager();
 var GlobUNameFactory = new UNameFactory();
 
+function submit_array(){
+  myArrayManager.saveValuesToElement();
+  fetch("/micarray", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify($('#idForm' + myArrayManager.identifier).serializeArray())
+  }).then(console.log(JSON.stringify($('#idForm' + myArrayManager.identifier).serializeArray())))
+}
+
+function add_signal(){
+  mySignalManager.saveValuesToElement();
+  GlobBinder.pushToVal("signal_list", {"name": GlobUNameFactory.get("signal"),"param":JSON.stringify(mySignalManager.element.parameters)});
+}
+
+function rmv_signal(){
+  console.log("rmv_signal")
+}
+
+function upd_signal(){
+  console.log("upd_signal")
+}
+
+function add_plot(){
+  myPlotManager.saveValuesToElement();
+  if( myLayout.selectedItem === null ) {
+      alert( 'No item selected' );
+  } else {
+      myLayout.selectedItem.addChild({
+        type:'component',
+        componentName:'plotComponent',
+        componentState:{"uid": GlobUNameFactory.get("plot"), "plotType":myPlotManager.element.arrType, "params":JSON.parse(JSON.stringify(myPlotManager.element.parameters))}
+      });
+  }
+}
 
 $( document ).ready( () =>{
   fetch("/interfaceobjects")
   .then(response => response.json())
   .then( iface_obj => {
-    var myLayout = new GoldenLayout( config1, $('#layoutContainer'));
+    myLayout = new GoldenLayout( config1, $('#layoutContainer'));
     myLayout.registerComponent( 'welcome', function( container, componentState ){
         container.getElement().html( '<h2>' + componentState.label + '</h2>' );
     });
@@ -198,35 +245,17 @@ $( document ).ready( () =>{
     wave_types = iface_obj["wave_types"];
     plot_types = iface_obj["plot_types"];
     myLayout.init();
-    var myArrayManager = new genericElementEditor($("#arraymenu"), "Array", array_types, () => {
-      myArrayManager.saveValuesToElement();
-      fetch("/micarray", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify($('#idForm' + myArrayManager.identifier).serializeArray())
-      }).then(console.log(JSON.stringify($('#idForm' + myArrayManager.identifier).serializeArray())))
-    });
 
-    var mySignalManager = new genericElementEditor($("#signalmenu"), "Signal", wave_types, () => {
-      mySignalManager.saveValuesToElement();
-      GlobBinder.pushToVal("signal_list", {"name": GlobUNameFactory.get("signal"),"param":JSON.stringify(mySignalManager.element.parameters)});
-    });
+    let array_btns = [{"label":"Set", "name":"Set", "onClick":submit_array}]
+    myArrayManager = new genericElementEditor($("#arraymenu"), "Array", array_types, array_btns);
 
-    var myPlotManager = new genericElementEditor($("#plotmenu"), "Plots", plot_types, () => {
-      myPlotManager.saveValuesToElement();
-      if( myLayout.selectedItem === null ) {
-          alert( 'No item selected' );
-      } else {
-          myLayout.selectedItem.addChild({
-            type:'component',
-            componentName:'plotComponent',
-            componentState:{"uid": GlobUNameFactory.get("plot"), "plotType":myPlotManager.element.arrType, "params":JSON.parse(JSON.stringify(myPlotManager.element.parameters))}
-          });
-      }
+    let signal_btns = [{"label":"Add new","name":"Add", "onClick":add_signal},
+                       {"label":"Remove","name":"Rmv", "onClick":rmv_signal},
+                       {"label":"Change Selected","name":"Chg", "onClick":upd_signal}]
+    mySignalManager = new genericElementEditor($("#signalmenu"), "Signal", wave_types, signal_btns);
 
-    });
+    let plot_btns = [{"label":"Plot","name":"plt", "onClick":add_plot}]
+    myPlotManager = new genericElementEditor($("#plotmenu"), "Plots", plot_types, plot_btns);
 
     mySignalList = new valuesListBox($("#signallist"), "SignalList", []);
 
