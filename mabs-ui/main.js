@@ -185,8 +185,10 @@ $( document ).ready( () =>{
     });
     myLayout.registerComponent( 'plotComponent', function( container, componentState){
       let container_elem = container.getElement();
-
-      fetch('/freqthetasweep?fmin=100&fmax=10000&fstep=100')
+      let req_url = '/plotimage?type=' + componentState.plotType;
+      for(param of Object.keys(componentState.params))
+          req_url += '&' + param + '=' + componentState.params[param];
+      fetch(req_url)
       .then(resp => resp.text())
       .then( imgdata => {
         container_elem.html('<img id="id' + componentState.uid + '" src="data:image/png;base64, ' + imgdata +'"/>')
@@ -220,7 +222,7 @@ $( document ).ready( () =>{
           myLayout.selectedItem.addChild({
             type:'component',
             componentName:'plotComponent',
-            componentState:{"uid": GlobUNameFactory.get("plot"), "plotType":myPlotManager.element.arrtype}
+            componentState:{"uid": GlobUNameFactory.get("plot"), "plotType":myPlotManager.element.arrType, "params":JSON.parse(JSON.stringify(myPlotManager.element.parameters))}
           });
       }
 

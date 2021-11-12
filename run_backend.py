@@ -75,7 +75,7 @@ wave_types = {
 }
 
 plot_types = {
-    "Directivity (colormap)": {
+    "directivity_colormap": {
         "MaxFrequency": {
           "description": "Maximum frequency of the plot",
           "value": 10000,
@@ -86,7 +86,7 @@ plot_types = {
             "value": 50,
             "type": "number"
             },
-        "stepFrequency": {
+        "StepFrequency": {
           "description": "Step used for simulation",
           "value": 50,
           "type": "number"
@@ -99,7 +99,7 @@ def getParam(name, param_list):
     return [theval["value"] for theval in param_list if theval["name"] == name][0]
 
 
-def filloutParams(pattern, param_list):
+def filloutParamsFromList(pattern, param_list):
     ret_dict = {}
     for mykey in pattern:
         ret_dict[mykey] = getParam("name" + mykey, param_list)
@@ -118,8 +118,8 @@ class SimulationManager():
 
     def instantiateMicArray(self, params):
         arrType = getParam("ArrayType", params)
-        micParam = filloutParams(array_types[arrType],
-                                 [par for par in params if par["name"] != "ArrayType"])
+        micParam = filloutParamsFromList(array_types[arrType],
+                                         [par for par in params if par["name"] != "ArrayType"])
         self.micArray = ma.unpackInstantiate(arrType, micParam)
         print(self.micArray)
 
@@ -144,17 +144,17 @@ def get_curr_array():
     return {"type": "ULA", "params": array_types["ULA"]}
 
 
-@ app.route('/freqthetasweep', methods=['GET'])
-def get_freqtheta_sweep():
-    f_range = [int(request.args.get("fmin")),
-               int(request.args.get("fmax")),
-               int(request.args.get("fstep"))]
-    try:
-        phi0 = int(request.args.get("phi0"))
-    except:
-        phi0 = 0
-    directivity, flabels = dr.prodprocdirectivity_fsweep(
-        mySimManager.micArray.micPos, f_range, phi0)
-    image = BytesIO()
-    eplt.plotColormap(directivity, y_labels=flabels, save_to=image)
-    return base64.encodebytes(image.getvalue())
+@ app.route('/plotimage', methods=['GET'])
+def get_plotimage():
+    plot_type = request.args.get("type")
+    if plot_type == "directivity_colormap":
+        f_range = [int(request.args.get("MinFrequency")),
+                   int(request.args.get("MaxFrequency")),
+                   int(request.args.get("StepFrequency"))]
+        directivity, flabels = dr.prodprocdirectivity_fsweep(
+                mySimManager.micArray.micPos, f_range, 0)
+        image = BytesIO()
+        eplt.plotColormap(directivity, y_labels=flabels, save_to=image)
+        return base64.encodebytes(image.getvalue())
+    else:
+        return ""
