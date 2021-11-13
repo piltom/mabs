@@ -241,7 +241,7 @@ $( document ).ready( () =>{
         let width = container_elem.css("width");
         let height = container_elem.css("height");
         container_elem.css('background-color', 'white');
-        container_elem.html('<img style="max-width:'+ width +'; max-height:' + height +';" id="id' + componentState.uid + '" src="data:image/png;base64, ' + imgdata +'"/>')
+        container_elem.html('<img style="margin: auto; display:block;max-width:'+ width +'; max-height:' + height +';" id="id' + componentState.uid + '" src="data:image/png;base64, ' + imgdata +'"/>')
       })
     });
     array_types = iface_obj["array_types"];
