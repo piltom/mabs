@@ -238,7 +238,10 @@ $( document ).ready( () =>{
       fetch(req_url)
       .then(resp => resp.text())
       .then( imgdata => {
-        container_elem.html('<img id="id' + componentState.uid + '" src="data:image/png;base64, ' + imgdata +'"/>')
+        let width = container_elem.css("width");
+        let height = container_elem.css("height");
+        container_elem.css('background-color', 'white');
+        container_elem.html('<img style="max-width:'+ width +'; max-height:' + height +';" id="id' + componentState.uid + '" src="data:image/png;base64, ' + imgdata +'"/>')
       })
     });
     array_types = iface_obj["array_types"];
