@@ -61,7 +61,7 @@ def plotPolar(angles, values):
     plt.show()
 
 
-def plotColormap(values, x_labels=None, y_labels=None, save_to=None):
+def plotColormap(values, x_labels=None, y_labels=None, save_to=None, text={}):
     plt.clf()
     if x_labels is None:
         x_labels = list(range(values.shape[1]))
@@ -70,6 +70,12 @@ def plotColormap(values, x_labels=None, y_labels=None, save_to=None):
     plt.pcolormesh(x_labels, y_labels, values, cmap="viridis", shading="auto")
     plt.clim(-60, 0)
     plt.colorbar()
+    if "xlabel" in text:
+        plt.xlabel(text["xlabel"])
+    if "ylabel" in text:
+        plt.ylabel(text["ylabel"])
+    if "title" in text:
+        plt.title(text["title"])
     if save_to is None:
         plt.show()
     else:

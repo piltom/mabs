@@ -154,7 +154,12 @@ def get_plotimage():
         directivity, flabels = dr.prodprocdirectivity_fsweep(
                 mySimManager.micArray.micPos, f_range, 0)
         image = BytesIO()
-        eplt.plotColormap(directivity, y_labels=flabels, save_to=image)
+        eplt.plotColormap(directivity,
+                          y_labels=flabels,
+                          save_to=image,
+                          text={"ylabel": "Frequency [Hz]",
+                                "xlabel": "Angle [deg]",
+                                "title": "Directivity " + str(mySimManager.micArray)})
         return base64.encodebytes(image.getvalue())
     else:
         return ""
