@@ -2,12 +2,12 @@ import numpy as np
 
 
 def prodprocdirectivity(micPos, f):
-    directivity = np.zeros((180, 180))  # directivity[phi][theta]
+    directivity = np.zeros((360, 360))  # directivity[phi][theta]
     gains = np.zeros(len(micPos))
 
-    for phi in range(180):
+    for phi in range(360):
         phiRad = phi*np.pi/180
-        for theta in range(180):
+        for theta in range(360):
             thetaRad = theta*np.pi/180
             w = np.array([np.cos(phiRad)*np.cos(thetaRad),
                           np.cos(phiRad)*np.sin(thetaRad),

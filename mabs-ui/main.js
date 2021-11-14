@@ -114,15 +114,15 @@ class genericElementEditor {
     this.element = new genericElement($("#id"+this.identifier+"Type")[0].value, this.config);
     let myHtml = "<legend>Parameters for " + this.element.arrType + "</legend>";
     for(const parameter of Object.keys(this.element.parameters)){
-      myHtml += '<label title="' + this.element.getInfo(parameter) + '" for="id' + parameter + '">'+ parameter+':</label>';
-      myHtml += '<input type="' + this.element.getType(parameter) + '" id="id'+ parameter +'" name="name'+ parameter +'" value="'+ this.element.getVal(parameter) +'"><br>'
+      myHtml += '<label title="' + this.element.getInfo(parameter) + '" for="id'+ this.identifier + parameter + '">'+ parameter+':</label>';
+      myHtml += '<input type="' + this.element.getType(parameter) + '" id="id'+ this.identifier + parameter +'" name="name'+ parameter +'" value="'+ this.element.getVal(parameter) +'"><br>'
     };
     $("#" +this.identifier + "ParamSet").html(myHtml);
   }
 
   saveValuesToElement(){
     for(const parameter of Object.keys(this.element.parameters)){
-      this.element.setVal(parameter, $('#id'+ parameter)[0].value);
+      this.element.setVal(parameter, $('#id'+ this.identifier+ parameter)[0].value);
     }
   }
 }
@@ -144,7 +144,7 @@ class valuesListBox{
   filloutOptions(){
     let myHtml = '';
     for(const val of this.values){
-      myHtml += '<option value="'+ val.idx +'">' + val.name + '</option>';
+      myHtml += '<option value="'+ val.name +'">' + val.name + '</option>';
     }
     $('#idBox' + this.identifier).html(myHtml);
   }

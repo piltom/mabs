@@ -2,7 +2,7 @@ from models import soundwave, micarrays
 from models.processors import MinWindowProcessor
 from engine import plotter
 from engine.timesim import BaseTimeSim
-from engine.directivity import prodprocdirectivity_fsweep
+from engine.directivity import prodprocdirectivity_fsweep, prodprocdirectivity
 
 import numpy as np
 import matplotlib.pyplot as plt

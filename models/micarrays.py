@@ -23,7 +23,7 @@ def ULAArray(K, L, noise=0):
         (-d*(K//2), 0, 0), (d*(K//2), 0, 0), K), np.linspace((0, -d*(K//2), 0), (0, d*(K//2), 0), K)))
     micPos = np.array([subarrayK])
 
-    name = 'ULAArray - K: %d L: %d' % (K, L)
+    name = 'ULAArray - K: %d L: %f' % (K, L)
 
     return GenericArray(micPos, noise, name)
 
@@ -53,7 +53,7 @@ def coprimeArray(K, M, N, L, noise=0):
     subarrayN = np.linspace((0, 0, 0), (d*M*(N-1), 0, 0), N)
     micPos = np.array([subarrayK, subarrayM, subarrayN])
 
-    name = 'coprimeLArray - N: %d M: %d K: %d L: %d' % (N, M, K, L)
+    name = 'coprimeLArray - N: %d M: %d K: %d L: %f' % (N, M, K, L)
 
     return GenericArray(micPos, noise, name)
 
@@ -65,7 +65,7 @@ def SemiCoprimeArray(N, M, L, noise=0):
     subarrayM = np.linspace((0, 0, 0), (d*N*(M-1), 0, 0), M)
     micPos = np.array([subarrayN, subarrayM])
 
-    name = 'SemiCoprimeLArray - N: %d M: %d L: %d' % (N, M, L)
+    name = 'SemiCoprimeLArray - N: %d M: %d L: %f' % (N, M, L)
 
     return GenericArray(micPos, noise, name)
 
@@ -82,7 +82,7 @@ def SemiCoprimeLArray(K, M, N, L, noise=0):
         (0, 0, 0), (d*M*(N-1), 0, 0), N), np.linspace((0, 0, 0), (0, d*M*(N-1), 0), N)))
     micPos = np.array([subarrayK, subarrayM, subarrayN])
 
-    name = 'SemiCoprimeLArray - N: %d M: %d K: %d L: %d' % (N, M, K, L)
+    name = 'SemiCoprimeLArray - N: %d M: %d K: %d L: %f' % (N, M, K, L)
 
     return GenericArray(micPos, noise, name)
 
@@ -100,7 +100,7 @@ def SemiCoprimeXArray(K, M, N, L, noise=0):
     micPos = np.array([subarrayK, subarrayM, subarrayN]
                       )  # Returns array of arrays
 
-    name = 'SemiCoprimeXArray - N: %d M: %d K: %d L: %d' % (N, M, K, L)
+    name = 'SemiCoprimeXArray - N: %d M: %d K: %d L: %f' % (N, M, K, L)
 
     return GenericArray(micPos, noise, name)
 
@@ -126,7 +126,7 @@ def TriCoprimeArray(K, M, N, R, noise=0):
     micPos = np.array([subarrayM, subarrayN, subarrayK]
                       )  # Returns array of arrays
 
-    name = 'TriCoprimeArray - N: %d M: %d K: %d R: %d' % (N, M, K, R)
+    name = 'TriCoprimeArray - N: %d M: %d K: %d R: %f' % (N, M, K, R)
     return GenericArray(micPos, noise, name)
 
 

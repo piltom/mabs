@@ -1,13 +1,17 @@
-from flask import Flask, jsonify, request
-import models.processors as mp
-import models.micarrays as ma
-import models.soundwave as ms
-import engine.timesim as ts
-import engine.directivity as dr
-import engine.plotter as eplt
-import json
-from io import BytesIO
+import matplotlib
+matplotlib.use('Agg')
 import base64
+from io import BytesIO
+import json
+import engine.plotter as eplt
+import engine.directivity as dr
+import engine.timesim as ts
+import models.soundwave as ms
+import models.micarrays as ma
+import models.processors as mp
+from flask import Flask, jsonify, request
+
+
 app = Flask(__name__,
             static_url_path='',
             static_folder='mabs-ui',
@@ -91,7 +95,14 @@ plot_types = {
           "value": 50,
           "type": "number"
           }
-        }
+        },
+    "directivity_polar": {
+        "Frequency": {
+          "description": "Design frequency",
+          "value": 1500,
+          "type": "number"
+          }
+    }
 }
 
 
@@ -121,7 +132,6 @@ class SimulationManager():
         micParam = filloutParamsFromList(array_types[arrType],
                                          [par for par in params if par["name"] != "ArrayType"])
         self.micArray = ma.unpackInstantiate(arrType, micParam)
-        print(self.micArray)
 
 
 mySimManager = SimulationManager()
@@ -160,6 +170,14 @@ def get_plotimage():
                           text={"ylabel": "Frequency [Hz]",
                                 "xlabel": "Angle [deg]",
                                 "title": "Directivity " + str(mySimManager.micArray)})
+        return base64.encodebytes(image.getvalue())
+    elif plot_type == "directivity_polar":
+        f_design = int(request.args.get("Frequency"))
+        directivity = dr.prodprocdirectivity(
+            mySimManager.micArray.micPos, f_design)
+        image = BytesIO()
+        eplt.plotPolar(
+            list(range(360)), directivity[0, :], save_to=image)
         return base64.encodebytes(image.getvalue())
     else:
         return ""

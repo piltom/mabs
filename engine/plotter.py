@@ -55,10 +55,14 @@ def plotSim(sim):
     plt.show()
 
 
-def plotPolar(angles, values):
-    plt.axes(projection='polar')
-    plt.polar(np.array(angles)*np.pi/180, values)
-    plt.show()
+def plotPolar(angles, values, save_to=None, text={}):
+    plt.clf()
+    plt.axes(projection='polar').set_ylim(-40, 0)
+    plt.polar(np.deg2rad(angles), values)
+    if save_to is None:
+        plt.show()
+    else:
+        plt.savefig(save_to, format='png')
 
 
 def plotColormap(values, x_labels=None, y_labels=None, save_to=None, text={}):
