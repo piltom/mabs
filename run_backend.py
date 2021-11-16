@@ -177,7 +177,10 @@ def get_plotimage():
             mySimManager.micArray.micPos, f_design)
         image = BytesIO()
         eplt.plotPolar(
-            list(range(360)), directivity[0, :], save_to=image)
+            list(range(360)),
+                 directivity[0, :],
+                 save_to=image,
+                 text={"title": "Directivity " + str(mySimManager.micArray) + "\nFrequency: %d Hz" % f_design})
         return base64.encodebytes(image.getvalue())
     else:
         return ""

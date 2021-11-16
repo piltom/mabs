@@ -59,6 +59,9 @@ def plotPolar(angles, values, save_to=None, text={}):
     plt.clf()
     plt.axes(projection='polar').set_ylim(-40, 0)
     plt.polar(np.deg2rad(angles), values)
+    if "title" in text:
+        plt.title(text["title"])
+    plt.tight_layout()
     if save_to is None:
         plt.show()
     else:

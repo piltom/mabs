@@ -61,7 +61,7 @@ def coprimeArray(K, M, N, L, noise=0):
 def SemiCoprimeArray(N, M, L, noise=0):
     freq = 343*M*N/(2*L)
     d = 343/(2*freq)
-    subarrayN = np.linspace((0, 0, 0), ((N-1)*d, 0, 0), N)
+    subarrayN = np.linspace((0, 0, 0), (M*(N-1)*d, 0, 0), N)
     subarrayM = np.linspace((0, 0, 0), (d*N*(M-1), 0, 0), M)
     micPos = np.array([subarrayN, subarrayM])
 
