@@ -34,20 +34,42 @@ class BindManager {
       }
     });
   }
-
+  emitOnChange(name){
+    for(const onchangecb of this.elements[name].onChangeList)
+      onchangecb();
+  }
   pushToVal(name, val){
     return new Promise((rslv, rjct) => {
       if(!this.elements.hasOwnProperty(name)){
         rjct("Trying to access unregistered element: " + name);
       }else{
         this.elements[name].value.push(val);
-        for(const onchangecb of this.elements[name].onChangeList)
-          onchangecb();
+        this.emitOnChange(name);
         rslv(val);
       }
     });
   }
-
+  removeIdxFromVal(name, idx){
+    if(!this.elements.hasOwnProperty(name)){
+      return Promise.reject("Trying to access unregistered element: " + name);
+    }else{
+      if (this.elements[name].value.length > idx && idx>=0){
+        this.elements[name].value.splice(idx,1)
+        this.emitOnChange(name);
+        Promise.resolve();
+      }else{
+        Promise.reject("Invalid index: " + idx);
+      }
+    }
+  }
+  removeWithFn(name, fn){
+    if(!this.elements.hasOwnProperty(name)){
+      return Promise.reject("Trying to access unregistered element: " + name);
+    }else{
+      let idx_del = this.elements[name].value.findIndex(fn);
+      return this.removeIdxFromVal(name, idx_del);
+    }
+}
   getVal(name){
     if(!this.elements.hasOwnProperty(name)){
       throw "Trying to access unregistered element: " + name;
@@ -144,13 +166,17 @@ class valuesListBox{
   filloutOptions(){
     let myHtml = '';
     for(const val of this.values){
-      myHtml += '<option value="'+ val.name +'">' + val.name + '</option>';
+      myHtml += '<option value="'+ val.id +'">' + val.name + '</option>';
     }
     $('#idBox' + this.identifier).html(myHtml);
   }
   update(){
     this.values = GlobBinder.getVal("signal_list");
     this.filloutOptions()
+  }
+
+  getSelected(){
+    return this.container.find(":selected").val();
   }
 }
 
@@ -198,11 +224,14 @@ function submit_array(){
 
 function add_signal(){
   mySignalManager.saveValuesToElement();
-  GlobBinder.pushToVal("signal_list", {"name": GlobUNameFactory.get("signal"),"param":JSON.stringify(mySignalManager.element.parameters)});
+  let newid = GlobUNameFactory.get("signal");
+  GlobBinder.pushToVal("signal_list", {"id": newid, "name": newid, "param":JSON.stringify(mySignalManager.element.parameters)});
 }
 
 function rmv_signal(){
-  console.log("rmv_signal")
+  let idtoremove = mySignalList.getSelected();
+  console.log(idtoremove);
+  GlobBinder.removeWithFn("signal_list", (el) => el.id == idtoremove);
 }
 
 function upd_signal(){
