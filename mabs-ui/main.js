@@ -77,6 +77,19 @@ class BindManager {
       return JSON.parse(JSON.stringify(this.elements[name].value));
     }
   }
+
+  forEach(name, _fn){
+    if(!this.elements.hasOwnProperty(name)){
+      return Promise.reject("Trying to access unregistered element: " + name);
+    }else{
+      return new Promise( resolve => {
+        for(let i=0; i<this.elements[name].value.length; i++)
+          _fn(this.elements[name].value[i])
+        this.emitOnChange(name);
+        resolve();
+      });
+    }
+  }
 }
 
 class genericElement {
@@ -231,11 +244,16 @@ function add_signal(){
 function rmv_signal(){
   let idtoremove = mySignalList.getSelected();
   console.log(idtoremove);
-  GlobBinder.removeWithFn("signal_list", (el) => el.id == idtoremove);
+  GlobBinder.removeWithFn("signal_list", el => el.id == idtoremove);
 }
 
 function upd_signal(){
-  console.log("upd_signal")
+  mySignalManager.saveValuesToElement();
+  let idtoupd = mySignalList.getSelected();
+  GlobBinder.forEach("signal_list", el => {
+    if(el.id === idtoupd)
+      el.param = JSON.stringify(mySignalManager.element.parameters)
+  })
 }
 
 function add_plot(){
