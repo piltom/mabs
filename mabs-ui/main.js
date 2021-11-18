@@ -118,7 +118,7 @@ class genericElement {
 class genericElementEditor {
   constructor(container, identifier, config, buttons){
     this.types = Object.keys(config);
-    this.element = new genericElement(this.types[0], config);
+    this.element = new genericElement(this.types[0], config[this.types[0]]);
     this.config = config
     this.container = container;
     this.identifier = identifier;
@@ -127,7 +127,11 @@ class genericElementEditor {
     //let thetype = //$("#id"+this.identifier+"Type")[0].value
     this.element = new genericElement(this.types[0], this.config[this.types[0]]);
     this.newTypeSelected()
-    $("#id"+identifier+"Type").change(() => this.newTypeSelected())
+    $("#id"+identifier+"Type").change(() =>{
+      this.element.arrType = $("#id"+this.identifier+"Type")[0].value;
+      this.element.parameters = this.config[this.element.arrType];
+      this.newTypeSelected()
+    })
   }
 
   generateTable(){
@@ -269,6 +273,7 @@ function sel_signal_chg(){
   let idtoupd = mySignalList.getSelected();
   let selected_data = GlobBinder.getVal("signal_list").find(el => el.id == idtoupd);
   if(selected_data !== undefined){
+      $('#id'+mySignalManager.identifier+'Type option[value="'+ selected_data.type +'"]').prop("selected", "selected");
       mySignalManager.element.parameters = selected_data.param;
       mySignalManager.element.arrType = selected_data.type;
       mySignalManager.newTypeSelected();
