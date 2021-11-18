@@ -95,11 +95,11 @@ class BindManager {
 class genericElement {
   constructor(arrtype, config) {
     this.arrType = arrtype;
-    this.parameters = JSON.parse(JSON.stringify(config[arrtype]));
+    this.parameters = JSON.parse(JSON.stringify(config));
   }
 
   setVal(key, val){
-    this.parameters[key] = val;
+    this.parameters[key].value = val;
   }
 
   getVal(key){
@@ -124,6 +124,8 @@ class genericElementEditor {
     this.identifier = identifier;
     this.buttons = buttons;
     this.generateTable();
+    //let thetype = //$("#id"+this.identifier+"Type")[0].value
+    this.element = new genericElement(this.types[0], this.config[this.types[0]]);
     this.newTypeSelected()
     $("#id"+identifier+"Type").change(() => this.newTypeSelected())
   }
@@ -146,7 +148,6 @@ class genericElementEditor {
   }
 
   newTypeSelected(){
-    this.element = new genericElement($("#id"+this.identifier+"Type")[0].value, this.config);
     let myHtml = "<legend>Parameters for " + this.element.arrType + "</legend>";
     for(const parameter of Object.keys(this.element.parameters)){
       myHtml += '<label title="' + this.element.getInfo(parameter) + '" for="id'+ this.identifier + parameter + '">'+ parameter+':</label>';
@@ -163,12 +164,14 @@ class genericElementEditor {
 }
 
 class valuesListBox{
-  constructor(container, identifier, initialValues){
+  constructor(container, identifier, initialValues, onChange){
     this.container = container;
     this.values = initialValues;
     this.identifier = identifier;
+    this.onChange = onChange
     this.generateHtml();
     this.filloutOptions();
+    $("#idBox"+this.identifier).change(this.onChange);
   }
 
   generateHtml(){
@@ -238,12 +241,16 @@ function submit_array(){
 function add_signal(){
   mySignalManager.saveValuesToElement();
   let newid = GlobUNameFactory.get("signal");
-  GlobBinder.pushToVal("signal_list", {"id": newid, "name": newid, "param":JSON.stringify(mySignalManager.element.parameters)});
+  GlobBinder.pushToVal("signal_list", {
+        "id": newid,
+        "name": newid,
+        "type":mySignalManager.element.arrType,
+        "param":JSON.parse(JSON.stringify(mySignalManager.element.parameters))
+  });
 }
 
 function rmv_signal(){
   let idtoremove = mySignalList.getSelected();
-  console.log(idtoremove);
   GlobBinder.removeWithFn("signal_list", el => el.id == idtoremove);
 }
 
@@ -251,9 +258,21 @@ function upd_signal(){
   mySignalManager.saveValuesToElement();
   let idtoupd = mySignalList.getSelected();
   GlobBinder.forEach("signal_list", el => {
-    if(el.id === idtoupd)
-      el.param = JSON.stringify(mySignalManager.element.parameters)
+    if(el.id === idtoupd){
+      el.param = JSON.parse(JSON.stringify(mySignalManager.element.parameters));
+      el.type = mySignalManager.element.arrType;
+    }
   })
+}
+
+function sel_signal_chg(){
+  let idtoupd = mySignalList.getSelected();
+  let selected_data = GlobBinder.getVal("signal_list").find(el => el.id == idtoupd);
+  if(selected_data !== undefined){
+      mySignalManager.element.parameters = selected_data.param;
+      mySignalManager.element.arrType = selected_data.type;
+      mySignalManager.newTypeSelected();
+  }
 }
 
 function add_plot(){
@@ -305,7 +324,7 @@ $( document ).ready( () =>{
     let plot_btns = [{"label":"Plot","name":"plt", "onClick":add_plot}]
     myPlotManager = new genericElementEditor($("#plotmenu"), "Plots", plot_types, plot_btns);
 
-    mySignalList = new valuesListBox($("#signallist"), "SignalList", []);
+    mySignalList = new valuesListBox($("#signallist"), "SignalList", [], sel_signal_chg );
 
     GlobBinder.registerElement("signal_list", [], [()=>(mySignalList.update())]);
 
