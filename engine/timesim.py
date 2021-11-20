@@ -5,7 +5,7 @@ class BaseTimeSim():
         self.mic_array=mic_array
         self.signals=signals
         self.processor=processor
-        self.processor.setupBuffer(len(signals))
+        self.processor.setupBuffer(len(mic_array.micPos))
         self.t_range=t_range
         self.t_step=t_step
         self.name=name
