@@ -37,7 +37,7 @@ class Soundwave():
 
 def sin(angles, amplitude, f, timerange, fs=None, name=None):
     if fs is None:
-        fs = 20*f
+        fs = 20*f if 20*f>20000 else 20000
     if name is None:
         name = "sine %d Hz" % f
     n_samples = np.int64((timerange[1]-timerange[0])*fs/1000)
