@@ -280,6 +280,24 @@ function sel_signal_chg(){
   }
 }
 
+function save_list(){
+  let signallist = GlobBinder.getVal("signal_list");
+  myArrayManager.saveValuesToElement();
+  fetch("/signal_list", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(signallist)
+  })
+}
+
+function get_list(){
+  fetch("/currentsignallist")
+  .then(response => response.json())
+  .then(list_json => GlobBinder.setVal("signal_list", list_json.list))
+}
+
 function add_plot(){
   myPlotManager.saveValuesToElement();
   if( myLayout.selectedItem === null ) {
@@ -323,7 +341,8 @@ $( document ).ready( () =>{
 
     let signal_btns = [{"label":"Add new","name":"Add", "onClick":add_signal},
                        {"label":"Remove","name":"Rmv", "onClick":rmv_signal},
-                       {"label":"Change Selected","name":"Chg", "onClick":upd_signal}]
+                       {"label":"Change Selected","name":"Chg", "onClick":upd_signal},
+                       {"label":"Save list", "name":"saveslist", "onClick":save_list}]
     mySignalManager = new genericElementEditor($("#signalmenu"), "Signal", wave_types, signal_btns);
 
     let plot_btns = [{"label":"Plot","name":"plt", "onClick":add_plot}]
@@ -333,6 +352,7 @@ $( document ).ready( () =>{
 
     GlobBinder.registerElement("signal_list", [], [()=>(mySignalList.update())]);
 
+    get_list();
     $(window).resize(function () {
       myLayout.updateSize($(window).width()-330, $(window).height()-40);
     });

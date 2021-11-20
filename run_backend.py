@@ -60,11 +60,6 @@ wave_types = {
           "value": 7,
           "type": "number"
       },
-      "Theta": {
-          "description": "Angle Theta",
-          "value": 1,
-          "type": "number"
-          },
       "Frequency": {
           "description": "Frequency",
           "value": 1,
@@ -74,8 +69,30 @@ wave_types = {
           "description": "Phase",
           "value": 30,
           "type": "number"
-          }
-  }
+          },
+      "Tstart": {
+          "description": "Signal start in ms",
+          "value": 0,
+          "type": "number"
+          },
+      "Tend": {
+           "description": "Signal end in ms",
+           "value": 1000,
+           "type": "number"
+           }
+  },
+    "Square": {
+        "Amplitude": {
+          "description": "Amplitude of wave",
+          "value": 5,
+          "type": "number"
+          },
+        "Frequency": {
+            "description": "Frequency",
+            "value": 1000,
+            "type": "number"
+        }
+    }
 }
 
 plot_types = {
@@ -102,6 +119,18 @@ plot_types = {
           "value": 1500,
           "type": "number"
           }
+    },
+    "timesim_time": {
+        "Tstart": {
+            "description": "Time start in ms",
+            "value": 0,
+            "type": "number"
+        },
+        "Tend": {
+            "description": "Time end in ms",
+            "value": 1000,
+            "type": "number"
+        }
     }
 }
 
@@ -123,6 +152,7 @@ class SimulationManager():
     def __init__(self):
         self.micArray = ma.ULAArray(5, 1)
         self.signals = []
+        self.signal_list = []
         self.processor = mp.MinWindowProcessor(1)
         self.sim = ts.BaseTimeSim(self.micArray, self.signals, self.processor,
                                   [0, 40], 0.01, name="TestSim")
@@ -133,6 +163,19 @@ class SimulationManager():
                                          [par for par in params if par["name"] != "ArrayType"])
         self.micArray = ma.unpackInstantiate(arrType, micParam)
 
+    def processSignalList(self):
+        self.signals = []
+        for sig in self.signal_list:
+            param = sig['param']
+            if sig['type'] == "Sin":
+                self.signals.append(
+                    ms.sin([int(param['Phi']['value']), 0],
+                            float(param['Amplitude']['value']),
+                            int(param['Frequency']['value']),
+                            [int(param['Tstart']['value']),int(param['Tend']['value'])])
+                )
+        for sig in self.signals:
+            print(sig)
 
 mySimManager = SimulationManager()
 
@@ -142,6 +185,18 @@ def set_mic_array():
     data = json.loads(request.data, strict=False)
     mySimManager.instantiateMicArray(data)
     return '', 204
+
+@ app.route('/signal_list', methods=['POST'])
+def set_signal_list():
+    data = json.loads(request.data, strict=False)
+    mySimManager.signal_list = data
+    mySimManager.processSignalList()
+    return '', 204
+
+
+@ app.route('/currentsignallist', methods=['GET'])
+def get_signal_list():
+    return {'list': mySimManager.signal_list}
 
 
 @ app.route('/interfaceobjects', methods=['GET'])
@@ -181,6 +236,19 @@ def get_plotimage():
                  directivity[0, :],
                  save_to=image,
                  text={"title": "Directivity " + str(mySimManager.micArray) + "\nFrequency: %d Hz" % f_design})
+        return base64.encodebytes(image.getvalue())
+    elif plot_type == "timesim_time":
+        t_start = int(request.args.get("Tstart"))
+        t_end = int(request.args.get("Tend"))
+
+        timesim1 = ts.BaseTimeSim(mySimManager.micArray,
+                                  mySimManager.signals,
+                                  mySimManager.processor,
+                                  [t_start,t_end],
+                                  0.01,
+                                  name="TestSim")
+        image = BytesIO()
+        eplt.plotSim(timesim1, save_to=image)
         return base64.encodebytes(image.getvalue())
     else:
         return ""
