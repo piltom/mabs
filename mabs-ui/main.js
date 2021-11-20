@@ -305,7 +305,7 @@ $( document ).ready( () =>{
       let container_elem = container.getElement();
       let req_url = '/plotimage?type=' + componentState.plotType;
       for(param of Object.keys(componentState.params))
-          req_url += '&' + param + '=' + componentState.params[param];
+          req_url += '&' + param + '=' + componentState.params[param].value;
       fetch(req_url)
       .then(resp => resp.text())
       .then( imgdata => {
